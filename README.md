@@ -1,4 +1,4 @@
-# Etude de cas $\text{Ekimetrics}$
+# Etude de cas Ekimetrics
 
 ### Installation
 
