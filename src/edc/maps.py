@@ -19,7 +19,7 @@ def plotMarker(carte,point,color='blue',with_tooltip=True):
                   icon=folium.Icon(color=color,icon='truck')
                   ).add_to(carte)
 
-def plotDot(carte,point,colormap=None,color=None):
+def plotDot(carte,point,colormap=None,color=None,with_tooltip = True):
     '''input: series that contains a numeric named latitude and a numeric named longitude
     this function creates a CircleMarker and adds it to your this_map'''
     if colormap is None :
@@ -29,11 +29,15 @@ def plotDot(carte,point,colormap=None,color=None):
             cm = color
     else :
         cm = colormap(point.order_total_volume)
+
+    tooltip = str(point.city)
+    if with_tooltip:
+        tooltip = str(point.city) + " : volume of {}".format(int(point.order_total_volume))
     folium.CircleMarker(location=[point.lat, point.lng],
                         radius=2,
                         weight=5,
                         color=cm,
-                        tooltip = str(point.city) + " : volume of {}".format(int(point.order_total_volume))
+                        tooltip = tooltip
                         ).add_to(carte)
 
 def plotLine(carte,order):

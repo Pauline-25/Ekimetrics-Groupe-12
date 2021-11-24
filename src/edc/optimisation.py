@@ -1,6 +1,8 @@
 from edc import voyageur_de_commerce
 from edc import utils
 
+""""Voyageur de commerce"""
+
 def optimiser_trajectoire(list_of_cities):
     """
     Execute le code de voyageur de commerce
@@ -10,6 +12,8 @@ def optimiser_trajectoire(list_of_cities):
              - nouvelle liste de ville
              - nouvelle distance
     """
+    if len(list_of_cities)==1 :
+        return [triplet[0] for triplet in list_of_cities]
     gc = voyageur_de_commerce.GestionnaireCircuit()
 
     for k in range(len(list_of_cities)):
@@ -34,11 +38,15 @@ def optimiser_trajectoire(list_of_cities):
     list_of_new_cities = utils.ordonner_une_liste(list_of_new_cities, list_of_cities[0][0])
 
     # on ajoute le trajet retour à l'ancienne distance
-    # trajet_retour = utils.distance(list_of_cities[0], list_of_cities[-1])
-    # ancienne_distance = df_routes.loc[1]['total_distance'] + trajet_retour
-
-    # list of ancienne cities
-    # list_of_only_old_cities = [list_of_cities[k][0] for k in range(len(list_of_cities))]
-
-    # return list_of_only_old_cities, ancienne_distance, list_of_new_cities, pop.getFittest().getDistance()
     return list_of_new_cities
+
+def best_traject(row):
+    list_of_cities_with_coord = [utils.donnees_cities_with_name(ville) for ville in row.stops_list]
+    try :
+        return optimiser_trajectoire(list_of_cities_with_coord)
+    except :
+        if len(row.stops_list) == 1 :
+            return row.stops_list
+        else :
+            print(row.stops_list)
+            raise ZeroDivisionError
