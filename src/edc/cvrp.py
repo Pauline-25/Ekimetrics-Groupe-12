@@ -2,6 +2,9 @@
 
 from ortools.constraint_solver import routing_enums_pb2
 from ortools.constraint_solver import pywrapcp
+from edc import utils
+from edc import processing
+import numpy as np
 
 # Création dictionnaire data
 def create_data_model(df_filtered,matrix_distance,demand,vehicle_capacities,num_vehicles,depot):
@@ -21,7 +24,8 @@ def index_to_city(data,index):
 def return_solution(data, manager, routing, solution, verbose = 1):
     """Prints solution on console."""
     list_of_cities = []
-    print(f'Objective: {solution.ObjectiveValue()} \n')
+    if verbose :
+        print(f'Objective: {solution.ObjectiveValue()} \n')
     total_distance = 0
     total_load = 0
     for vehicle_id in range(data['num_vehicles']):
@@ -50,9 +54,10 @@ def return_solution(data, manager, routing, solution, verbose = 1):
             print(plan_output)
         total_distance += route_distance
         total_load += route_load
-        
-    print('Total distance of all routes: {}m'.format(total_distance))
-    print('Total load of all routes: {}'.format(total_load))
+    
+    if verbose :
+        print('Total distance of all routes: {}km'.format(total_distance))
+        print('Total load of all routes: {}'.format(total_load))
     return list_of_cities
 
 def CVRP(data,verbose=True):
@@ -111,3 +116,13 @@ def CVRP(data,verbose=True):
         return return_solution(data, manager, routing, solution, verbose)
     else:
         print("No solution")
+
+def apply_CVRP(df_orders_opt,warehouse_name_test,date_test,delay_test) : 
+    try :
+        df_filtered,matrix_distance,demand,vehicle_capacities,num_vehicles,depot = processing.processing_opti_rendement(df_orders_opt,warehouse_name_test,date_test,delay_test)
+        lists_of_cities = CVRP(create_data_model(df_filtered,matrix_distance,demand,vehicle_capacities,num_vehicles,depot),verbose=0)
+        lists_of_cities = [ utils.remove_consecutive_duplicate(list_of_city) for list_of_city in lists_of_cities] 
+        return lists_of_cities
+    except :
+        return np.nan    
+

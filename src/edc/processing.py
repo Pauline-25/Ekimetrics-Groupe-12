@@ -14,7 +14,7 @@ df_routes.drop(columns=['stops'],inplace=True)
 
 def find_closest_warehouse(city,list_warehouse,return_index=False):
     dataframe_warehouse_cood = df_cities[df_cities.city.isin(list_warehouse)]
-    distances = dataframe_warehouse_cood.apply(lambda row : utils.distance((row.lng,row.lat),utils.donnees_cities(city)),axis=1)
+    distances = dataframe_warehouse_cood.apply(lambda row : utils.dist((row.lng,row.lat),utils.donnees_cities(city)),axis=1)
     index = distances.argmin()
     if return_index :
         return index
